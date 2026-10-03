@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense & Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="light">
+
+  <!-- Header -->
+  <header class="app-header">
+    <h1>💰 Budget Tracker</h1>
+    <button id="themeToggle" class="icon-btn" title="Toggle dark/light mode">🌙</button>
+  </header>
+
+  <main class="container">
+
+    <!-- Balance Card -->
+    <section class="balance-card" aria-label="Total Balance">
+      <p class="balance-label">Total Balance</p>
+      <h2 id="totalBalance" class="balance-amount">$0.00</h2>
+      <div class="balance-meta">
+        <span id="incomeTotal" class="income-tag">+ $0.00 Income</span>
+        <span id="expenseTotal" class="expense-tag">− $0.00 Expenses</span>
+      </div>
+      <!-- Spending limit indicator -->
+      <div id="limitWarning" class="limit-warning hidden" role="alert">
+        ⚠️ You've exceeded your spending limit!
+      </div>
+    </section>
+
+    <!-- Spending Limit Control -->
+    <section class="limit-section card">
+      <label for="spendingLimit" class="section-title">🎯 Spending Limit</label>
+      <div class="limit-row">
+        <input type="number" id="spendingLimit" placeholder="Set a limit (e.g. 500)" min="0" step="0.01" aria-label="Set spending limit" />
+        <button id="setLimitBtn" class="btn btn-secondary">Set</button>
+        <button id="clearLimitBtn" class="btn btn-ghost">Clear</button>
+      </div>
+      <p id="currentLimit" class="limit-info"></p>
+    </section>
+
+    <!-- Add Transaction Form -->
+    <section class="form-section card">
+      <h2 class="section-title">➕ Add Transaction</h2>
+      <form id="transactionForm" novalidate>
+        <div class="form-group">
+          <label for="itemName">Item Name</label>
+          <input type="text" id="itemName" placeholder="e.g. Coffee, Bus fare…" maxlength="60" required />
+          <span class="field-error" id="nameError"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="amount">Amount ($)</label>
+            <input type="number" id="amount" placeholder="0.00" min="0.01" step="0.01" required />
+            <span class="field-error" id="amountError"></span>
+          </div>
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" required>
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category</label>
+          <div class="category-row">
+            <select id="category" required>
+              <option value="">Select category…</option>
+              <option value="Food">🍔 Food</option>
+              <option value="Transport">🚌 Transport</option>
+              <option value="Fun">🎮 Fun</option>
+              <option value="Health">💊 Health</option>
+              <option value="Shopping">🛍️ Shopping</option>
+              <option value="Bills">🧾 Bills</option>
+              <option value="Other">📦 Other</option>
+            </select>
+            <button type="button" id="addCategoryBtn" class="btn btn-ghost" title="Add custom category">+ Custom</button>
+          </div>
+          <span class="field-error" id="categoryError"></span>
+        </div>
+
+        <!-- Custom Category Input (hidden by default) -->
+        <div class="form-group hidden" id="customCategoryGroup">
+          <label for="customCategory">Custom Category Name</label>
+          <div class="category-row">
+            <input type="text" id="customCategory" placeholder="e.g. Gym, Travel…" maxlength="30" />
+            <button type="button" id="saveCustomCategoryBtn" class="btn btn-secondary">Save</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">Add Transaction</button>
+      </form>
+    </section>
+
+    <!-- Monthly Summary -->
+    <section class="summary-section card">
+      <div class="section-header">
+        <h2 class="section-title">📅 Monthly Summary</h2>
+        <select id="monthSelector" aria-label="Select month"></select>
+      </div>
+      <div id="monthlySummary" class="monthly-summary">
+        <p class="empty-msg">No data for selected month.</p>
+      </div>
+    </section>
+
+    <!-- Chart -->
+    <section class="chart-section card">
+      <h2 class="section-title">📊 Spending by Category</h2>
+      <div class="chart-wrapper">
+        <canvas id="expenseChart" aria-label="Pie chart of spending by category" role="img"></canvas>
+        <p id="chartEmpty" class="empty-msg">Add some expenses to see the chart.</p>
+      </div>
+    </section>
+
+    <!-- Transaction List -->
+    <section class="list-section card">
+      <div class="section-header">
+        <h2 class="section-title">🧾 Transactions</h2>
+        <div class="sort-row">
+          <label for="sortBy" class="sr-only">Sort by</label>
+          <select id="sortBy" aria-label="Sort transactions">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="amount-desc">Highest Amount</option>
+            <option value="amount-asc">Lowest Amount</option>
+            <option value="category-asc">Category A–Z</option>
+          </select>
+        </div>
+      </div>
+      <ul id="transactionList" class="transaction-list" aria-label="Transaction list">
+        <li class="empty-msg" id="emptyMsg">No transactions yet. Add one above!</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>Built with ❤️ — Budget Tracker</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
